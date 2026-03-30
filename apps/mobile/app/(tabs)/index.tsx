@@ -26,6 +26,9 @@ import {
   MoreHorizontal,
   ThumbsUp,
   Globe,
+  Play,
+  Search,
+  Bell,
 } from 'lucide-react-native';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -38,6 +41,10 @@ function mediaUrl(url: string) {
   if (!url) return '';
   if (url.startsWith('http')) return url;
   return `${API_ROOT}${url}`;
+}
+
+function isVideo(url: string) {
+  return /\.(mp4|mov|webm)$/i.test(url);
 }
 
 export default function FeedScreen() {
@@ -130,40 +137,46 @@ export default function FeedScreen() {
     router.push({ pathname: '/gallery/[id]', params: { id: pubId, index: String(index) } });
   };
 
+  const renderMediaItem = (m: { id: string; url: string }, style: { width: number | string; height: number | string }, pubId: string, index: number) => {
+    if (isVideo(m.url)) {
+      return (
+        <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, index)} style={[style as any, { backgroundColor: '#000' }]}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={styles.playCircle}>
+              <Play size={28} color={Colors.white} fill={Colors.white} />
+            </View>
+            <Text style={{ color: Colors.gray[400], fontSize: 12, marginTop: 8 }}>Vidéo</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, index)}>
+        <Image source={{ uri: mediaUrl(m.url) }} style={style as any} resizeMode="cover" />
+      </TouchableOpacity>
+    );
+  };
+
   const renderMediaGrid = (media: { id: string; url: string }[], pubId: string) => {
     const count = media.length;
     if (count === 0) return null;
 
     if (count === 1) {
-      return (
-        <TouchableOpacity activeOpacity={0.9} onPress={() => openGallery(pubId, 0)}>
-          <Image source={{ uri: mediaUrl(media[0].url) }} style={{ width: SCREEN_W, height: SCREEN_W * 0.75 }} resizeMode="cover" />
-        </TouchableOpacity>
-      );
+      return renderMediaItem(media[0], { width: SCREEN_W, height: SCREEN_W * 0.75 }, pubId, 0);
     }
     if (count === 2) {
       return (
         <View style={{ flexDirection: 'row' }}>
-          {media.map((m, i) => (
-            <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, i)}>
-              <Image source={{ uri: mediaUrl(m.url) }} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.6 }} resizeMode="cover" />
-            </TouchableOpacity>
-          ))}
+          {media.map((m, i) => renderMediaItem(m, { width: SCREEN_W / 2, height: SCREEN_W * 0.6 }, pubId, i))}
         </View>
       );
     }
     if (count === 3) {
       return (
         <View>
-          <TouchableOpacity activeOpacity={0.9} onPress={() => openGallery(pubId, 0)}>
-            <Image source={{ uri: mediaUrl(media[0].url) }} style={{ width: SCREEN_W, height: SCREEN_W * 0.55 }} resizeMode="cover" />
-          </TouchableOpacity>
+          {renderMediaItem(media[0], { width: SCREEN_W, height: SCREEN_W * 0.55 }, pubId, 0)}
           <View style={{ flexDirection: 'row' }}>
-            {media.slice(1, 3).map((m, i) => (
-              <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, i + 1)}>
-                <Image source={{ uri: mediaUrl(m.url) }} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.38 }} resizeMode="cover" />
-              </TouchableOpacity>
-            ))}
+            {media.slice(1, 3).map((m, i) => renderMediaItem(m, { width: SCREEN_W / 2, height: SCREEN_W * 0.38 }, pubId, i + 1))}
           </View>
         </View>
       );
@@ -174,7 +187,13 @@ export default function FeedScreen() {
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {shown.map((m, i) => (
           <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, i)} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.38 }}>
-            <Image source={{ uri: mediaUrl(m.url) }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+            {isVideo(m.url) ? (
+              <View style={{ flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
+                <Play size={24} color={Colors.white} fill={Colors.white} />
+              </View>
+            ) : (
+              <Image source={{ uri: mediaUrl(m.url) }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+            )}
             {i === 3 && extra > 0 && (
               <View style={styles.mediaOverlay}>
                 <Text style={styles.mediaOverlayText}>+{extra}</Text>
@@ -318,6 +337,16 @@ export default function FeedScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#f0f2f5' }}>
+      {/* Facebook-style header */}
+      <View style={styles.appHeader}>
+        <Text style={styles.appName}>Evantix</Text>
+        <View style={styles.appHeaderRight}>
+          <TouchableOpacity style={styles.headerIconBtn} onPress={() => router.push('/(tabs)/new-publication')} activeOpacity={0.7}>
+            <Plus size={22} color={Colors.gray[900]} strokeWidth={2.2} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <FlatList
         data={publications}
         keyExtractor={(item, index) => (item?.id as string) ?? String(index)}
@@ -338,11 +367,6 @@ export default function FeedScreen() {
           </View>
         }
       />
-
-      {/* FAB */}
-      <TouchableOpacity style={styles.fab} onPress={() => router.push('/(tabs)/new-publication')} activeOpacity={0.8}>
-        <Plus size={28} color={Colors.white} strokeWidth={2.5} />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -443,20 +467,42 @@ const styles = StyleSheet.create({
   },
   actionLabel: { fontSize: 13, color: Colors.gray[500], fontWeight: '600' },
 
-  fab: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.primary[600],
+  playCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(255,255,255,0.25)',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
+  },
+
+  appHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 50,
+    paddingBottom: 10,
+    backgroundColor: Colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray[200],
+  },
+  appName: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: Colors.primary[600],
+    letterSpacing: -0.5,
+  },
+  appHeaderRight: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  headerIconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.gray[100],
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

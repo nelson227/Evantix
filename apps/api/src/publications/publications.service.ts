@@ -188,18 +188,22 @@ export class PublicationsService {
 
   // ==================== COMMENTS ====================
 
-  async getComments(publicationId: string, cursor?: string, limit = 20) {
+  async getComments(publicationId: string, cursor?: string, limit?: number) {
+    const take = (limit && limit > 0 ? limit : 20) + 1;
     const comments = await this.prisma.comment.findMany({
       where: { publicationId },
       include: {
-        author: { select: { id: true, displayName: true, profile: { select: { avatarUrl: true } } } },
+        author: {
+          include: { profile: true },
+        },
       },
-      take: limit + 1,
+      take,
       ...(cursor && { cursor: { id: cursor }, skip: 1 }),
       orderBy: { createdAt: 'asc' },
     });
-    const hasMore = comments.length > limit;
-    const items = hasMore ? comments.slice(0, limit) : comments;
+    const actualLimit = take - 1;
+    const hasMore = comments.length > actualLimit;
+    const items = hasMore ? comments.slice(0, actualLimit) : comments;
     return {
       items: items.map((c) => ({
         id: c.id,
@@ -207,7 +211,7 @@ export class PublicationsService {
         author: {
           id: c.author.id,
           displayName: c.author.displayName,
-          avatarUrl: (c.author as any).profile?.avatarUrl ?? null,
+          avatarUrl: c.author.profile?.avatarUrl ?? null,
         },
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,

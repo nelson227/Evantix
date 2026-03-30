@@ -36,6 +36,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Fil',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
         }}
       />
