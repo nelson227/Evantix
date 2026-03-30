@@ -86,7 +86,7 @@ export default function NewPublicationScreen() {
       formData.append('files', { uri, name, type } as unknown as Blob);
     }
     const { data } = await api.post('/uploads', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': undefined as unknown as string },
     });
     return (data as { url: string }[]).map((f) => f.url);
   };

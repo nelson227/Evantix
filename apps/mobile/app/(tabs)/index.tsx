@@ -76,7 +76,10 @@ export default function FeedScreen() {
       if (liked) await api.delete(`/publications/${id}/like`);
       else await api.post(`/publications/${id}/like`);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['feed'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['feed'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
   });
 
   const saveMutation = useMutation({
@@ -89,12 +92,18 @@ export default function FeedScreen() {
 
   const shareMutation = useMutation({
     mutationFn: (id: string) => api.post(`/publications/${id}/share`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['feed'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['feed'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.delete(`/publications/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['feed'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['feed'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
   });
 
   const handleMenu = (item: Record<string, unknown>) => {
@@ -117,20 +126,28 @@ export default function FeedScreen() {
     ]);
   };
 
-  const renderMediaGrid = (media: { id: string; url: string }[]) => {
+  const openGallery = (pubId: string, index: number) => {
+    router.push({ pathname: '/gallery/[id]', params: { id: pubId, index: String(index) } });
+  };
+
+  const renderMediaGrid = (media: { id: string; url: string }[], pubId: string) => {
     const count = media.length;
     if (count === 0) return null;
 
     if (count === 1) {
       return (
-        <Image source={{ uri: mediaUrl(media[0].url) }} style={{ width: SCREEN_W, height: SCREEN_W * 0.75 }} resizeMode="cover" />
+        <TouchableOpacity activeOpacity={0.9} onPress={() => openGallery(pubId, 0)}>
+          <Image source={{ uri: mediaUrl(media[0].url) }} style={{ width: SCREEN_W, height: SCREEN_W * 0.75 }} resizeMode="cover" />
+        </TouchableOpacity>
       );
     }
     if (count === 2) {
       return (
         <View style={{ flexDirection: 'row' }}>
-          {media.map((m) => (
-            <Image key={m.id} source={{ uri: mediaUrl(m.url) }} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.6 }} resizeMode="cover" />
+          {media.map((m, i) => (
+            <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, i)}>
+              <Image source={{ uri: mediaUrl(m.url) }} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.6 }} resizeMode="cover" />
+            </TouchableOpacity>
           ))}
         </View>
       );
@@ -138,29 +155,32 @@ export default function FeedScreen() {
     if (count === 3) {
       return (
         <View>
-          <Image source={{ uri: mediaUrl(media[0].url) }} style={{ width: SCREEN_W, height: SCREEN_W * 0.55 }} resizeMode="cover" />
+          <TouchableOpacity activeOpacity={0.9} onPress={() => openGallery(pubId, 0)}>
+            <Image source={{ uri: mediaUrl(media[0].url) }} style={{ width: SCREEN_W, height: SCREEN_W * 0.55 }} resizeMode="cover" />
+          </TouchableOpacity>
           <View style={{ flexDirection: 'row' }}>
-            {media.slice(1, 3).map((m) => (
-              <Image key={m.id} source={{ uri: mediaUrl(m.url) }} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.38 }} resizeMode="cover" />
+            {media.slice(1, 3).map((m, i) => (
+              <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, i + 1)}>
+                <Image source={{ uri: mediaUrl(m.url) }} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.38 }} resizeMode="cover" />
+              </TouchableOpacity>
             ))}
           </View>
         </View>
       );
     }
-    // 4+ images: 2x2 grid, with overlay "+N" on last item
     const shown = media.slice(0, 4);
     const extra = count - 4;
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {shown.map((m, i) => (
-          <View key={m.id} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.38 }}>
+          <TouchableOpacity key={m.id} activeOpacity={0.9} onPress={() => openGallery(pubId, i)} style={{ width: SCREEN_W / 2, height: SCREEN_W * 0.38 }}>
             <Image source={{ uri: mediaUrl(m.url) }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
             {i === 3 && extra > 0 && (
               <View style={styles.mediaOverlay}>
                 <Text style={styles.mediaOverlayText}>+{extra}</Text>
               </View>
             )}
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     );
@@ -237,7 +257,7 @@ export default function FeedScreen() {
         )}
 
         {/* ===== MEDIA GRID (Facebook style) ===== */}
-        {media.length > 0 && renderMediaGrid(media)}
+        {media.length > 0 && renderMediaGrid(media, item.id as string)}
 
         {/* ===== COUNTERS (like Facebook: "128  15 comments  19 shares") ===== */}
         {((counters?.likesCount ?? 0) > 0 || (counters?.commentsCount ?? 0) > 0 || (counters?.sharesCount ?? 0) > 0) && (

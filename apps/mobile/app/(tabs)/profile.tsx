@@ -87,7 +87,7 @@ export default function ProfileScreen() {
       const formData = new FormData();
       formData.append('files', { uri, name, type: mimeMap[ext] || 'image/jpeg' } as unknown as Blob);
       const { data: uploaded } = await api.post('/uploads', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': undefined as unknown as string },
       });
       const avatarUrl = (uploaded as { url: string }[])[0].url;
       await api.patch('/me/profile', { avatarUrl });

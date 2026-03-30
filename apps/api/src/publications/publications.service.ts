@@ -192,7 +192,7 @@ export class PublicationsService {
     const comments = await this.prisma.comment.findMany({
       where: { publicationId },
       include: {
-        author: { select: { id: true, displayName: true } },
+        author: { select: { id: true, displayName: true, profile: { select: { avatarUrl: true } } } },
       },
       take: limit + 1,
       ...(cursor && { cursor: { id: cursor }, skip: 1 }),
@@ -204,7 +204,11 @@ export class PublicationsService {
       items: items.map((c) => ({
         id: c.id,
         body: c.body,
-        author: c.author,
+        author: {
+          id: c.author.id,
+          displayName: c.author.displayName,
+          avatarUrl: (c.author as any).profile?.avatarUrl ?? null,
+        },
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
       })),
