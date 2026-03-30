@@ -98,7 +98,7 @@ export default function GoalsScreen() {
         <View style={styles.cardHeader}>
           <Target size={20} color={Colors.primary[600]} />
           <Text style={styles.metricLabel}>
-            {item.title as string || METRIC_LABELS[item.metricType as string] ?? item.metricType}
+            {(item.title as string) || (METRIC_LABELS[item.metricType as string] ?? (item.metricType as string))}
           </Text>
         </View>
 

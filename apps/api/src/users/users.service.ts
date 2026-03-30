@@ -25,6 +25,7 @@ export class UsersService {
         ...(dto.ministryName !== undefined && { ministryName: dto.ministryName }),
         ...(dto.favoriteBibleVerse !== undefined && { favoriteBibleVerse: dto.favoriteBibleVerse }),
         ...(dto.phoneNumber !== undefined && { phoneNumber: dto.phoneNumber }),
+        ...(dto.avatarUrl !== undefined && { avatarUrl: dto.avatarUrl }),
       },
       create: {
         userId,
@@ -34,6 +35,7 @@ export class UsersService {
         ministryName: dto.ministryName,
         favoriteBibleVerse: dto.favoriteBibleVerse,
         phoneNumber: dto.phoneNumber,
+        avatarUrl: dto.avatarUrl,
       },
     });
 

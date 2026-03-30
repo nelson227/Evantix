@@ -15,8 +15,10 @@ import { api } from '@/lib/api';
 import { Colors } from '@/lib/colors';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { Camera, X, Image as ImageIcon } from 'lucide-react-native';
+import { Camera, X, Image as ImageIcon, Video } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
+
+const API_ROOT = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3001/api/v1').replace('/api/v1', '');
 
 const TYPES = [
   { value: 'past_outreach', label: 'Rapport' },
@@ -38,20 +40,20 @@ export default function NewPublicationScreen() {
     tractsDistributedTotal: '',
   });
 
-  const pickImages = async () => {
+  const pickMedia = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission requise', "Autorisez l'accès à vos photos pour ajouter des images.");
+      Alert.alert('Permission requise', "Autorisez l'accès à vos photos pour ajouter des médias.");
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ['images', 'videos'],
       allowsMultipleSelection: true,
       quality: 0.8,
-      selectionLimit: 6,
+      selectionLimit: 20,
     });
     if (!result.canceled) {
-      setImages((prev) => [...prev, ...result.assets.map((a) => a.uri)].slice(0, 6));
+      setImages((prev) => [...prev, ...result.assets.map((a) => a.uri)].slice(0, 20));
     }
   };
 
@@ -63,7 +65,7 @@ export default function NewPublicationScreen() {
     }
     const result = await ImagePicker.launchCameraAsync({ quality: 0.8 });
     if (!result.canceled) {
-      setImages((prev) => [...prev, result.assets[0].uri].slice(0, 6));
+      setImages((prev) => [...prev, result.assets[0].uri].slice(0, 20));
     }
   };
 
@@ -71,19 +73,44 @@ export default function NewPublicationScreen() {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const [uploading, setUploading] = useState(false);
+
+  const uploadFiles = async (uris: string[]): Promise<string[]> => {
+    if (uris.length === 0) return [];
+    const formData = new FormData();
+    for (const uri of uris) {
+      const name = uri.split('/').pop() || 'file';
+      const ext = name.split('.').pop()?.toLowerCase() || 'jpg';
+      const mimeMap: Record<string, string> = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp', mp4: 'video/mp4', mov: 'video/quicktime' };
+      const type = mimeMap[ext] || 'image/jpeg';
+      formData.append('files', { uri, name, type } as unknown as Blob);
+    }
+    const { data } = await api.post('/uploads', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return (data as { url: string }[]).map((f) => f.url);
+  };
+
   const mutation = useMutation({
-    mutationFn: () => {
-      const payload: Record<string, unknown> = { type, narrativeText: content };
-      if (location) payload.locationName = location;
-      if (type === 'past_outreach') {
-        payload.stats = {
-          peoplePreached: parseInt(stats.peoplePreached) || 0,
-          peoplePrayedFor: parseInt(stats.peoplePrayedFor) || 0,
-          booksDistributedTotal: parseInt(stats.booksDistributedTotal) || 0,
-          tractsDistributedTotal: parseInt(stats.tractsDistributedTotal) || 0,
-        };
+    mutationFn: async () => {
+      setUploading(true);
+      try {
+        const mediaUrls = await uploadFiles(images);
+        const payload: Record<string, unknown> = { type, narrativeText: content };
+        if (location) payload.locationName = location;
+        if (mediaUrls.length > 0) payload.mediaUrls = mediaUrls;
+        if (type === 'past_outreach') {
+          payload.stats = {
+            peoplePreached: parseInt(stats.peoplePreached) || 0,
+            peoplePrayedFor: parseInt(stats.peoplePrayedFor) || 0,
+            booksDistributedTotal: parseInt(stats.booksDistributedTotal) || 0,
+            tractsDistributedTotal: parseInt(stats.tractsDistributedTotal) || 0,
+          };
+        }
+        return api.post('/publications', payload);
+      } finally {
+        setUploading(false);
       }
-      return api.post('/publications', payload);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['feed'] });
@@ -128,7 +155,7 @@ export default function NewPublicationScreen() {
           placeholderTextColor={Colors.gray[400]}
         />
 
-        <Text style={styles.label}>Photos</Text>
+        <Text style={styles.label}>Photos & Vidéos</Text>
         <View style={styles.photoSection}>
           {images.map((uri, i) => (
             <View key={i} style={styles.photoThumb}>
@@ -138,9 +165,9 @@ export default function NewPublicationScreen() {
               </TouchableOpacity>
             </View>
           ))}
-          {images.length < 6 && (
+          {images.length < 20 && (
             <View style={styles.photoActions}>
-              <TouchableOpacity style={styles.photoBtn} onPress={pickImages}>
+              <TouchableOpacity style={styles.photoBtn} onPress={pickMedia}>
                 <ImageIcon size={22} color={Colors.primary[600]} />
                 <Text style={styles.photoBtnText}>Galerie</Text>
               </TouchableOpacity>
@@ -185,11 +212,11 @@ export default function NewPublicationScreen() {
         )}
 
         <TouchableOpacity
-          style={[styles.button, (!content || mutation.isPending) && styles.buttonDisabled]}
+          style={[styles.button, (!content || mutation.isPending || uploading) && styles.buttonDisabled]}
           onPress={() => mutation.mutate()}
-          disabled={!content || mutation.isPending}
+          disabled={!content || mutation.isPending || uploading}
         >
-          <Text style={styles.buttonText}>{mutation.isPending ? 'Publication…' : 'Publier'}</Text>
+          <Text style={styles.buttonText}>{uploading ? 'Upload des médias…' : mutation.isPending ? 'Publication…' : 'Publier'}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

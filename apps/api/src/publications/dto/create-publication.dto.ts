@@ -42,7 +42,7 @@ class MaterialsDto {
 }
 
 export class CreatePublicationDto {
-  @IsEnum(['past_outreach', 'future_event'])
+  @IsEnum(['past_outreach', 'future_event', 'testimony', 'prayer_request'])
   type: string;
 
   @IsOptional()
@@ -84,5 +84,5 @@ export class CreatePublicationDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  mediaFileKeys?: string[];
+  mediaUrls?: string[];
 }

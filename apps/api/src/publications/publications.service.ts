@@ -69,6 +69,15 @@ export class PublicationsService {
             ],
           },
         }),
+        ...(dto.mediaUrls && dto.mediaUrls.length > 0 && {
+          media: {
+            create: dto.mediaUrls.map((url, i) => ({
+              fileKey: url.split('/').pop() || url,
+              url,
+              order: i,
+            })),
+          },
+        }),
       },
       include: this.fullInclude(),
     });
@@ -297,6 +306,8 @@ export class PublicationsService {
       stats: true,
       media: { orderBy: { order: 'asc' as const } },
       materials: true,
+      likes: { select: { userId: true } },
+      saves: { select: { userId: true } },
       _count: { select: { comments: true, likes: true, saves: true, shares: true } },
     };
   }
@@ -344,6 +355,8 @@ export class PublicationsService {
       },
       viewerState: viewerId
         ? {
+            liked: pub.likes?.some((l: any) => l.userId === viewerId) ?? false,
+            saved: pub.saves?.some((s: any) => s.userId === viewerId) ?? false,
             canEdit: pub.author.id === viewerId,
           }
         : undefined,
