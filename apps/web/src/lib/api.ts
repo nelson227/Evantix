@@ -1,6 +1,17 @@
 import axios from 'axios';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+const API_ROOT = API_BASE.replace('/api/v1', '');
+
+export function mediaUrl(url: string) {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `${API_ROOT}${url}`;
+}
+
+export function isVideo(url: string) {
+  return /\.(mp4|mov|webm)$/i.test(url);
+}
 
 export const api = axios.create({
   baseURL: API_BASE,

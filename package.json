@@ -26,6 +26,10 @@
     "@evantix/mobile": {
       "react": "$react",
       "react-native": "$react-native"
+    },
+    "@evantix/web": {
+      "react": "18.3.1",
+      "react-dom": "18.3.1"
     }
   },
   "dependencies": {

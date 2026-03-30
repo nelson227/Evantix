@@ -1,16 +1,17 @@
 'use client';
 
 import { AppShell } from '@/components/app-shell';
-import { api } from '@/lib/api';
+import { api, mediaUrl } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { User, MapPin, BookOpen, Phone, Save } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { User, MapPin, BookOpen, Phone, Save, Camera } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user } = useAuth();
   const qc = useQueryClient();
   const [editing, setEditing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile'],
@@ -53,6 +54,23 @@ export default function ProfilePage() {
     },
   });
 
+  const uploadAvatar = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const formData = new FormData();
+    formData.append('files', files[0]);
+    try {
+      const { data: uploaded } = await api.post('/uploads', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (uploaded?.[0]?.url) {
+        await api.patch('/me/profile', { avatarUrl: uploaded[0].url });
+        qc.invalidateQueries({ queryKey: ['profile'] });
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   if (isLoading) {
     return (
       <AppShell>
@@ -64,6 +82,7 @@ export default function ProfilePage() {
   }
 
   const p = profile?.profile ?? {};
+  const avatarSrc = p.avatarUrl ? mediaUrl(p.avatarUrl) : null;
 
   return (
     <AppShell>
@@ -118,9 +137,29 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className="card space-y-4">
+            {/* Avatar + Info (Facebook-style) */}
             <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-primary-100 flex items-center justify-center">
-                <User className="h-8 w-8 text-primary-600" />
+              <div className="relative group">
+                <div className="h-20 w-20 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden ring-4 ring-white shadow">
+                  {avatarSrc ? (
+                    <img src={avatarSrc} alt="" className="h-20 w-20 rounded-full object-cover" />
+                  ) : (
+                    <User className="h-10 w-10 text-primary-600" />
+                  )}
+                </div>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-gray-200 flex items-center justify-center ring-2 ring-white hover:bg-gray-300 transition-colors"
+                >
+                  <Camera className="h-3.5 w-3.5 text-gray-700" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => uploadAvatar(e.target.files)}
+                  className="hidden"
+                />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">{profile?.displayName}</h2>
