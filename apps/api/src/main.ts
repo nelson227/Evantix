@@ -13,8 +13,10 @@ async function bootstrap() {
 
   // Serve uploaded files statically
   app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+
+  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: corsOrigin.includes(',') ? corsOrigin.split(',').map(s => s.trim()) : corsOrigin,
     credentials: true,
   });
 
