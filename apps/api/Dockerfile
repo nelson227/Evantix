@@ -15,8 +15,8 @@ RUN echo '{"compilerOptions":{"target":"ES2022","module":"commonjs","lib":["ES20
 # Install ALL dependencies
 RUN npm install --legacy-peer-deps
 
-# Generate Prisma client
-RUN npx prisma generate
+# Generate Prisma client (use installed version, not npx latest)
+RUN ./node_modules/.bin/prisma generate
 
 # Copy API source and build
 COPY src ./src/
@@ -31,15 +31,16 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy package files and install prod deps
+# Copy package files and install prod deps + prisma CLI for migrations
 COPY package.json ./
-RUN npm install --legacy-peer-deps --omit=dev
-
-# Generate Prisma client for production
 COPY prisma ./prisma/
-RUN npx prisma generate
+RUN npm install --legacy-peer-deps --omit=dev && npm install prisma@5.22.0 --legacy-peer-deps
 
-# tsconfig.base.json needed at runtime path for any reflection
+# Copy generated Prisma client from builder (already matches schema)
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+
+# tsconfig.base.json needed at runtime path
 RUN echo '{}' > /tsconfig.base.json
 
 # Copy built app
@@ -50,8 +51,7 @@ RUN mkdir -p /app/uploads
 
 EXPOSE ${PORT:-3001}
 
-# Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Run migrations then start the server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+# Run migrations then start the server (use installed prisma, not npx)
+CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/main"]
