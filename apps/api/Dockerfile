@@ -59,4 +59,4 @@ EXPOSE ${PORT:-3001}
 
 ENTRYPOINT ["dumb-init", "--"]
 
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "npx prisma@5.22.0 migrate deploy; node dist/main"]
