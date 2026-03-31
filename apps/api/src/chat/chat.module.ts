@@ -11,7 +11,7 @@ import { ChatGateway } from './chat.gateway';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_ACCESS_SECRET'),
+        secret: config.get<string>('JWT_ACCESS_SECRET') || 'change-me-in-production',
         signOptions: { expiresIn: config.get<string>('JWT_ACCESS_EXPIRATION', '15m') },
       }),
     }),

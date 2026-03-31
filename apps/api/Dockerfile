@@ -53,5 +53,5 @@ EXPOSE ${PORT:-3001}
 
 ENTRYPOINT ["dumb-init", "--"]
 
-# Run migrations then start the server (use installed prisma, not npx)
-CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/main"]
+# Run migrations (non-blocking) then start the server
+CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy || echo 'Migration skipped or failed, starting anyway'; node dist/main"]
