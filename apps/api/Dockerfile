@@ -55,8 +55,11 @@ COPY --from=builder /app/dist ./dist/
 # Create uploads directory
 RUN mkdir -p /app/uploads
 
+# Create startup script
+RUN printf '#!/bin/sh\necho "Running migrations..."\nif [ -f node_modules/.bin/prisma ]; then\n  node_modules/.bin/prisma migrate deploy 2>&1 || echo "Migration skipped"\nelse\n  echo "Prisma CLI not found, skipping migration"\nfi\necho "Starting server..."\nexec node dist/main\n' > /app/start.sh && chmod +x /app/start.sh
+
 EXPOSE ${PORT:-3001}
 
 ENTRYPOINT ["dumb-init", "--"]
 
-CMD ["sh", "-c", "npx prisma@5.22.0 migrate deploy; node dist/main"]
+CMD ["/app/start.sh"]
