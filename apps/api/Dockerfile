@@ -3,22 +3,24 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy root workspace files
-COPY package.json package-lock.json tsconfig.base.json ./
-COPY apps/api/package.json apps/api/
-COPY apps/api/tsconfig.json apps/api/
-COPY apps/api/nest-cli.json apps/api/
-COPY apps/api/prisma apps/api/prisma/
+# Copy package files
+COPY package.json ./
+COPY tsconfig.json ./
+COPY nest-cli.json ./
+COPY prisma ./prisma/
 
-# Install ALL dependencies (workspace-aware)
-RUN npm ci --legacy-peer-deps --workspace=apps/api --include-workspace-root
+# The API tsconfig extends ../../tsconfig.base.json — create it where expected
+RUN echo '{"compilerOptions":{"target":"ES2022","module":"commonjs","lib":["ES2022"],"declaration":true,"strict":true,"noImplicitAny":true,"strictNullChecks":true,"noUnusedLocals":false,"noUnusedParameters":false,"noImplicitReturns":true,"noFallthroughCasesInSwitch":true,"moduleResolution":"node","esModuleInterop":true,"resolveJsonModule":true,"skipLibCheck":true,"forceConsistentCasingInFileNames":true,"emitDecoratorMetadata":true,"experimentalDecorators":true}}' > /tsconfig.base.json
+
+# Install ALL dependencies
+RUN npm install --legacy-peer-deps
 
 # Generate Prisma client
-RUN cd apps/api && npx prisma generate
+RUN npx prisma generate
 
 # Copy API source and build
-COPY apps/api/src apps/api/src/
-RUN cd apps/api && npm run build
+COPY src ./src/
+RUN npm run build
 
 # ── Stage 2: Production ────────────────────────────────
 FROM node:20-alpine AS runner
@@ -29,24 +31,22 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy root workspace files for resolution
-COPY package.json package-lock.json tsconfig.base.json ./
-COPY apps/api/package.json apps/api/
+# Copy package files and install prod deps
+COPY package.json ./
+RUN npm install --legacy-peer-deps --omit=dev
 
-# Install production dependencies only
-RUN npm ci --legacy-peer-deps --workspace=apps/api --include-workspace-root --omit=dev
+# Generate Prisma client for production
+COPY prisma ./prisma/
+RUN npx prisma generate
 
-# Re-generate Prisma client for production
-COPY apps/api/prisma apps/api/prisma/
-RUN cd apps/api && npx prisma generate
+# tsconfig.base.json needed at runtime path for any reflection
+RUN echo '{}' > /tsconfig.base.json
 
 # Copy built app
-COPY --from=builder /app/apps/api/dist apps/api/dist/
+COPY --from=builder /app/dist ./dist/
 
 # Create uploads directory
-RUN mkdir -p /app/apps/api/uploads
-
-WORKDIR /app/apps/api
+RUN mkdir -p /app/uploads
 
 EXPOSE ${PORT:-3001}
 
