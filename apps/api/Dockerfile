@@ -53,5 +53,5 @@ EXPOSE ${PORT:-3001}
 
 ENTRYPOINT ["dumb-init", "--"]
 
-# Run migrations (non-blocking) then start the server
-CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy || echo 'Migration skipped or failed, starting anyway'; node dist/main"]
+# Start the server (migrations handled by Railway startCommand or manually)
+CMD ["node", "dist/main"]
