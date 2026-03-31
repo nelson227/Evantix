@@ -25,7 +25,7 @@ RUN npm run build
 # ── Stage 2: Production ────────────────────────────────
 FROM node:20-alpine AS runner
 
-RUN apk add --no-cache dumb-init
+RUN apk add --no-cache dumb-init openssl
 
 WORKDIR /app
 
@@ -39,6 +39,9 @@ RUN npm install --legacy-peer-deps --omit=dev && npm install prisma@5.22.0 --leg
 # Copy generated Prisma client from builder (already matches schema)
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+
+# Also copy prisma engines from builder (needed for migrate deploy)
+COPY --from=builder /app/node_modules/@prisma/engines ./node_modules/@prisma/engines
 
 # tsconfig.base.json needed at runtime path
 RUN echo '{}' > /tsconfig.base.json

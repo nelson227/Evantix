@@ -4,7 +4,7 @@ dockerfilePath = "Dockerfile"
 watchPatterns = ["**"]
 
 [deploy]
-startCommand = "npx prisma@5.22.0 migrate deploy && node dist/main"
+startCommand = "node_modules/.bin/prisma migrate deploy && node dist/main"
 healthcheckPath = "/api/v1/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
