@@ -2,7 +2,7 @@ import { Tabs, Redirect } from 'expo-router';
 import { useAuth } from '@/lib/auth-context';
 import { ActivityIndicator, View } from 'react-native';
 import { Colors } from '@/lib/colors';
-import { Home, PenSquare, Target, BarChart3, MessageCircle } from 'lucide-react-native';
+import { Home, Target, BarChart3, MessageCircle, User } from 'lucide-react-native';
 
 export default function TabsLayout() {
   const { user, loading } = useAuth();
@@ -36,14 +36,8 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Fil',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="new-publication"
-        options={{
-          title: 'Publier',
-          tabBarIcon: ({ color, size }) => <PenSquare size={size} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -66,6 +60,17 @@ export default function TabsLayout() {
           title: 'Chat',
           tabBarIcon: ({ color, size }) => <MessageCircle size={size} color={color} />,
         }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profil',
+          tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="new-publication"
+        options={{ href: null }}
       />
     </Tabs>
   );

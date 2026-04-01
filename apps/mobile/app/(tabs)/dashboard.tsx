@@ -21,7 +21,9 @@ export default function DashboardScreen() {
     );
   }
 
-  const d = data ?? {};
+  const d = data ?? {} as Record<string, unknown>;
+  const summary = (d as Record<string, unknown>).summary as Record<string, number> | undefined;
+  const goalsInfo = (d as Record<string, unknown>).goals as { activeCount: number; completedCount: number } | undefined;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -29,44 +31,42 @@ export default function DashboardScreen() {
       <View style={styles.statsGrid}>
         <View style={[styles.statCard, { borderLeftColor: Colors.primary[500] }]}>
           <BookOpen size={22} color={Colors.primary[600]} />
-          <Text style={styles.statValue}>{d.publicationsCount ?? 0}</Text>
+          <Text style={styles.statValue}>{summary?.publicationsCount ?? 0}</Text>
           <Text style={styles.statLabel}>Publications</Text>
         </View>
         <View style={[styles.statCard, { borderLeftColor: Colors.success }]}>
           <Users size={22} color={Colors.success} />
-          <Text style={styles.statValue}>{d.totalStats?.people_preached ?? 0}</Text>
+          <Text style={styles.statValue}>{summary?.peoplePreachedTotal ?? summary?.peoplePrachedTotal ?? 0}</Text>
           <Text style={styles.statLabel}>Évangélisés</Text>
         </View>
         <View style={[styles.statCard, { borderLeftColor: Colors.warning }]}>
           <BookOpen size={22} color={Colors.warning} />
-          <Text style={styles.statValue}>{d.totalStats?.bibles_given ?? 0}</Text>
-          <Text style={styles.statLabel}>Bibles</Text>
+          <Text style={styles.statValue}>{summary?.booksDistributedTotal ?? 0}</Text>
+          <Text style={styles.statLabel}>Livres distribués</Text>
         </View>
         <View style={[styles.statCard, { borderLeftColor: Colors.accent[500] }]}>
           <Target size={22} color={Colors.accent[500]} />
-          <Text style={styles.statValue}>{d.activeGoalsCount ?? 0}</Text>
+          <Text style={styles.statValue}>{goalsInfo?.activeCount ?? 0}</Text>
           <Text style={styles.statLabel}>Objectifs actifs</Text>
         </View>
       </View>
 
-      {/* Goals progress */}
-      {d.goals && d.goals.length > 0 && (
+      {/* Goals summary */}
+      {goalsInfo && (goalsInfo.activeCount > 0 || goalsInfo.completedCount > 0) && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Objectifs en cours</Text>
-          {d.goals.map((g: { id: string; metricType: string; currentValue: number; targetValue: number }) => {
-            const pct = Math.min(Math.round((g.currentValue / g.targetValue) * 100), 100);
-            return (
-              <View key={g.id} style={styles.goalRow}>
-                <View style={styles.goalHeader}>
-                  <Text style={styles.goalLabel}>{g.metricType.replace(/_/g, ' ')}</Text>
-                  <Text style={styles.goalPct}>{pct}%</Text>
-                </View>
-                <View style={styles.progressBg}>
-                  <View style={[styles.progressFill, { width: `${pct}%` }]} />
-                </View>
-              </View>
-            );
-          })}
+          <Text style={styles.sectionTitle}>Objectifs</Text>
+          <View style={styles.goalRow}>
+            <View style={styles.goalHeader}>
+              <Text style={styles.goalLabel}>Actifs</Text>
+              <Text style={styles.goalPct}>{goalsInfo.activeCount}</Text>
+            </View>
+          </View>
+          <View style={styles.goalRow}>
+            <View style={styles.goalHeader}>
+              <Text style={styles.goalLabel}>Complétés</Text>
+              <Text style={styles.goalPct}>{goalsInfo.completedCount}</Text>
+            </View>
+          </View>
         </View>
       )}
     </ScrollView>

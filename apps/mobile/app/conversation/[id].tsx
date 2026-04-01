@@ -29,7 +29,7 @@ export default function ConversationScreen() {
   const { data } = useQuery({
     queryKey: ['messages', id],
     queryFn: async () => {
-      const { data } = await api.get(`/chat/conversations/${id}/messages`, {
+      const { data } = await api.get(`/conversations/${id}/messages`, {
         params: { limit: 50 },
       });
       return data;
@@ -39,14 +39,14 @@ export default function ConversationScreen() {
 
   const sendMessage = useMutation({
     mutationFn: (content: string) =>
-      api.post(`/chat/conversations/${id}/messages`, { content }),
+      api.post(`/conversations/${id}/messages`, { body: content }),
     onSuccess: () => {
       setText('');
       qc.invalidateQueries({ queryKey: ['messages', id] });
     },
   });
 
-  const messages = [...(data?.data ?? [])].reverse();
+  const messages = [...(data?.items ?? [])].reverse();
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -56,18 +56,18 @@ export default function ConversationScreen() {
 
   const renderMessage = ({ item }: { item: Record<string, unknown> }) => {
     const isMine = (item.senderId as string) === user?.id;
-    const sender = item.sender as { displayName: string };
 
     return (
       <View style={[styles.msgRow, isMine ? styles.msgRowRight : styles.msgRowLeft]}>
         <View style={[styles.bubble, isMine ? styles.bubbleMine : styles.bubbleOther]}>
-          {!isMine && <Text style={styles.senderName}>{sender.displayName}</Text>}
           <Text style={[styles.msgText, isMine && { color: Colors.white }]}>
-            {item.content as string}
+            {(item.body ?? item.content ?? '') as string}
           </Text>
-          <Text style={[styles.msgTime, isMine && { color: 'rgba(255,255,255,0.6)' }]}>
-            {formatDistanceToNow(new Date(item.createdAt as string), { addSuffix: true, locale: fr })}
-          </Text>
+          {item.createdAt && (
+            <Text style={[styles.msgTime, isMine && { color: 'rgba(255,255,255,0.6)' }]}>
+              {formatDistanceToNow(new Date(item.createdAt as string), { addSuffix: true, locale: fr })}
+            </Text>
+          )}
         </View>
       </View>
     );
@@ -84,7 +84,7 @@ export default function ConversationScreen() {
         <FlatList
           ref={listRef}
           data={messages}
-          keyExtractor={(item) => item.id as string}
+          keyExtractor={(item, index) => (item?.id as string) ?? String(index)}
           renderItem={renderMessage}
           contentContainerStyle={styles.messagesList}
           onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}

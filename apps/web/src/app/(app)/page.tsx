@@ -5,7 +5,10 @@ import { PublicationCard } from '@/components/publication-card';
 import { api } from '@/lib/api';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Plus, User } from 'lucide-react';
+import Link from 'next/link';
+import { useAuth } from '@/lib/auth-context';
+import { mediaUrl } from '@/lib/api';
 
 const TYPES = [
   { value: '', label: 'Tous' },
@@ -18,6 +21,7 @@ const TYPES = [
 ];
 
 export default function FeedPage() {
+  const { user } = useAuth();
   const [typeFilter, setTypeFilter] = useState('');
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
@@ -42,31 +46,45 @@ export default function FeedPage() {
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 
-  const publications = data?.pages.flatMap((p) => p.data) ?? [];
+  const publications = data?.pages.flatMap((p) => p.items ?? p.data ?? []) ?? [];
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-2xl space-y-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Fil d&apos;actualité</h1>
+      <div className="mx-auto max-w-2xl space-y-4">
+        {/* Create post box (Facebook-style) */}
+        <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-200 p-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+              <User className="h-5 w-5 text-gray-400" />
+            </div>
+            <Link
+              href="/publications/new"
+              className="flex-1 bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2.5 text-gray-500 text-sm transition-colors"
+            >
+              Quoi de neuf, {user?.displayName?.split(' ')[0] ?? 'vous'} ?
+            </Link>
+          </div>
+        </div>
+
+        {/* Search + Filters */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               setSearch(searchInput);
             }}
-            className="relative"
+            className="relative flex-1"
           >
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Rechercher…"
-              className="input pl-9 pr-3 py-2 text-sm w-full sm:w-64"
+              className="input pl-9 pr-3 py-2 text-sm w-full"
             />
           </form>
         </div>
 
-        {/* Filters */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <Filter className="h-4 w-4 text-gray-400 flex-shrink-0" />
           {TYPES.map((t) => (

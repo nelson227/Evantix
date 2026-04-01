@@ -1,0 +1,5 @@
+{
+  "installCommand": "echo '{}' > ../../package.json && npm install --legacy-peer-deps",
+  "buildCommand": "next build",
+  "framework": "nextjs"
+}

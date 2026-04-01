@@ -27,9 +27,9 @@ api.interceptors.response.use(
         if (!refreshToken) throw new Error('No refresh token');
 
         const { data } = await axios.post(`${API_BASE}/auth/refresh`, { refreshToken });
-        await SecureStore.setItemAsync('evantix_access_token', data.tokens.accessToken);
-        await SecureStore.setItemAsync('evantix_refresh_token', data.tokens.refreshToken);
-        originalRequest.headers.Authorization = `Bearer ${data.tokens.accessToken}`;
+        await SecureStore.setItemAsync('evantix_access_token', data.accessToken);
+        await SecureStore.setItemAsync('evantix_refresh_token', data.refreshToken);
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(originalRequest);
       } catch {
         await SecureStore.deleteItemAsync('evantix_access_token');

@@ -69,6 +69,15 @@ export class PublicationsService {
             ],
           },
         }),
+        ...(dto.mediaUrls && dto.mediaUrls.length > 0 && {
+          media: {
+            create: dto.mediaUrls.map((url, i) => ({
+              fileKey: url.split('/').pop() || url,
+              url,
+              order: i,
+            })),
+          },
+        }),
       },
       include: this.fullInclude(),
     });
@@ -179,23 +188,31 @@ export class PublicationsService {
 
   // ==================== COMMENTS ====================
 
-  async getComments(publicationId: string, cursor?: string, limit = 20) {
+  async getComments(publicationId: string, cursor?: string, limit?: number) {
+    const take = (limit && limit > 0 ? limit : 20) + 1;
     const comments = await this.prisma.comment.findMany({
       where: { publicationId },
       include: {
-        author: { select: { id: true, displayName: true } },
+        author: {
+          include: { profile: true },
+        },
       },
-      take: limit + 1,
+      take,
       ...(cursor && { cursor: { id: cursor }, skip: 1 }),
       orderBy: { createdAt: 'asc' },
     });
-    const hasMore = comments.length > limit;
-    const items = hasMore ? comments.slice(0, limit) : comments;
+    const actualLimit = take - 1;
+    const hasMore = comments.length > actualLimit;
+    const items = hasMore ? comments.slice(0, actualLimit) : comments;
     return {
       items: items.map((c) => ({
         id: c.id,
         body: c.body,
-        author: c.author,
+        author: {
+          id: c.author.id,
+          displayName: c.author.displayName,
+          avatarUrl: c.author.profile?.avatarUrl ?? null,
+        },
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
       })),
@@ -297,6 +314,8 @@ export class PublicationsService {
       stats: true,
       media: { orderBy: { order: 'asc' as const } },
       materials: true,
+      likes: { select: { userId: true } },
+      saves: { select: { userId: true } },
       _count: { select: { comments: true, likes: true, saves: true, shares: true } },
     };
   }
@@ -344,6 +363,8 @@ export class PublicationsService {
       },
       viewerState: viewerId
         ? {
+            liked: pub.likes?.some((l: any) => l.userId === viewerId) ?? false,
+            saved: pub.saves?.some((s: any) => s.userId === viewerId) ?? false,
             canEdit: pub.author.id === viewerId,
           }
         : undefined,
