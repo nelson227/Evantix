@@ -77,26 +77,32 @@ export class AuthService implements OnModuleInit {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
-    if (!user || !user.isActive) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    try {
+      const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+      if (!user || !user.isActive) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
 
-    const valid = await argon2.verify(user.passwordHash, dto.password);
-    if (!valid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+      const valid = await argon2.verify(user.passwordHash, dto.password);
+      if (!valid) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
 
-    const tokens = await this.generateTokens(user.id, user.role);
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        displayName: user.displayName,
-      },
-      tokens,
-    };
+      const tokens = await this.generateTokens(user.id, user.role);
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          displayName: user.displayName,
+        },
+        tokens,
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
+      this.logger.error('Login failed', error instanceof Error ? error.stack : error);
+      throw new InternalServerErrorException('Login failed. Please try again.');
+    }
   }
 
   async refresh(refreshToken: string) {
