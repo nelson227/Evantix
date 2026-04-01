@@ -55,8 +55,8 @@ COPY --from=builder /app/dist ./dist/
 # Create uploads directory
 RUN mkdir -p /app/uploads
 
-# Create startup script
-RUN printf '#!/bin/sh\necho "Running migrations..."\nif [ -f node_modules/.bin/prisma ]; then\n  node_modules/.bin/prisma migrate deploy 2>&1 || echo "Migration skipped"\nelse\n  echo "Prisma CLI not found, skipping migration"\nfi\necho "Starting server..."\nexec node dist/main\n' > /app/start.sh && chmod +x /app/start.sh
+# Create startup script with better error reporting
+RUN printf '#!/bin/sh\nset -e\necho "=== Startup ==="\necho "DATABASE_URL set: $(if [ -n "$DATABASE_URL" ]; then echo yes; else echo NO; fi)"\necho "Prisma files:"\nls -la prisma/ 2>/dev/null || echo "No prisma dir"\nls -la prisma/migrations/ 2>/dev/null || echo "No migrations dir"\necho "Running migrations..."\nif [ -f node_modules/.bin/prisma ]; then\n  node_modules/.bin/prisma migrate deploy 2>&1\n  echo "Migration completed successfully"\nelse\n  echo "ERROR: Prisma CLI not found!"\n  exit 1\nfi\necho "Starting server..."\nexec node dist/main\n' > /app/start.sh && chmod +x /app/start.sh
 
 EXPOSE ${PORT:-3001}
 
