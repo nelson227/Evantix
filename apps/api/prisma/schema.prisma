@@ -1,0 +1,359 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USERS ====================
+
+enum UserRole {
+  member
+  leader
+  moderator
+  admin
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  displayName  String   @map("display_name")
+  role         UserRole @default(member)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  profile        Profile?
+  publications   Publication[]
+  comments       Comment[]
+  likes          Like[]
+  saves          Save[]
+  shares         Share[]
+  goals          Goal[]
+  notifications  Notification[]
+  refreshTokens  RefreshToken[]
+  reports        Report[]        @relation("reporter")
+  auditLogs      AuditLog[]
+
+  sentMessages       Message[]            @relation("sender")
+  conversationMembers ConversationMember[]
+
+  @@map("users")
+}
+
+model Profile {
+  id                String  @id @default(uuid()) @db.Uuid
+  userId            String  @unique @map("user_id") @db.Uuid
+  avatarUrl         String? @map("avatar_url")
+  bio               String?
+  city              String?
+  country           String?
+  ministryName      String? @map("ministry_name")
+  favoriteBibleVerse String? @map("favorite_bible_verse")
+  phoneNumber       String? @map("phone_number")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @map("token_hash")
+  family    String   @default(uuid())
+  expiresAt DateTime @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("refresh_tokens")
+}
+
+// ==================== PUBLICATIONS ====================
+
+enum PublicationType {
+  past_outreach
+  future_event
+}
+
+enum PublicationStatus {
+  published
+  hidden
+  deleted
+  expired
+}
+
+model Publication {
+  id             String            @id @default(uuid()) @db.Uuid
+  authorId       String            @map("author_id") @db.Uuid
+  type           PublicationType
+  status         PublicationStatus  @default(published)
+  title          String?
+  narrativeText  String            @map("narrative_text")
+  locationName   String?           @map("location_name")
+  outreachDate   DateTime?         @map("outreach_date") @db.Date
+  eventStartAt   DateTime?         @map("event_start_at")
+  eventEndAt     DateTime?         @map("event_end_at")
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  author    User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  stats     PublicationStats?
+  media     PublicationMedia[]
+  materials PublicationMaterial[]
+  comments  Comment[]
+  likes     Like[]
+  saves     Save[]
+  shares    Share[]
+  goalContributions GoalContribution[]
+
+  @@index([authorId, createdAt(sort: Desc)])
+  @@index([type, status, createdAt(sort: Desc)])
+  @@index([locationName])
+  @@map("publications")
+}
+
+model PublicationStats {
+  id                    String @id @default(uuid()) @db.Uuid
+  publicationId         String @unique @map("publication_id") @db.Uuid
+  peopleMet             Int    @default(0) @map("people_met")
+  peoplePreached        Int    @default(0) @map("people_preached")
+  peoplePrayedFor       Int    @default(0) @map("people_prayed_for")
+  booksDistributedTotal Int    @default(0) @map("books_distributed_total")
+  tractsDistributedTotal Int   @default(0) @map("tracts_distributed_total")
+  housesVisited         Int    @default(0) @map("houses_visited")
+  neighborhoodsCovered  Int    @default(0) @map("neighborhoods_covered")
+  teamSize              Int    @default(0) @map("team_size")
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@map("publication_stats")
+}
+
+model PublicationMedia {
+  id            String  @id @default(uuid()) @db.Uuid
+  publicationId String  @map("publication_id") @db.Uuid
+  fileKey       String  @map("file_key")
+  url           String
+  width         Int?
+  height        Int?
+  order         Int     @default(0)
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@map("publication_media")
+}
+
+model PublicationMaterial {
+  id            String @id @default(uuid()) @db.Uuid
+  publicationId String @map("publication_id") @db.Uuid
+  category      String // 'book' or 'tract'
+  title         String
+  quantity      Int
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@map("publication_materials")
+}
+
+// ==================== INTERACTIONS ====================
+
+model Comment {
+  id            String   @id @default(uuid()) @db.Uuid
+  publicationId String   @map("publication_id") @db.Uuid
+  authorId      String   @map("author_id") @db.Uuid
+  body          String
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  author      User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([publicationId, createdAt])
+  @@map("comments")
+}
+
+model Like {
+  id            String   @id @default(uuid()) @db.Uuid
+  publicationId String   @map("publication_id") @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([publicationId, userId])
+  @@map("likes")
+}
+
+model Save {
+  id            String   @id @default(uuid()) @db.Uuid
+  publicationId String   @map("publication_id") @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([publicationId, userId])
+  @@map("saves")
+}
+
+model Share {
+  id            String   @id @default(uuid()) @db.Uuid
+  publicationId String   @map("publication_id") @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("shares")
+}
+
+// ==================== GOALS ====================
+
+enum GoalStatus {
+  active
+  completed
+  expired
+  paused
+  cancelled
+}
+
+model Goal {
+  id           String      @id @default(uuid()) @db.Uuid
+  userId       String      @map("user_id") @db.Uuid
+  title        String
+  metricType   String      @map("metric_type")
+  targetValue  Int         @map("target_value")
+  currentValue Int         @default(0) @map("current_value")
+  startDate    DateTime    @map("start_date") @db.Date
+  endDate      DateTime    @map("end_date") @db.Date
+  description  String?
+  status       GoalStatus  @default(active)
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contributions GoalContribution[]
+
+  @@index([userId, status, endDate])
+  @@map("goals")
+}
+
+model GoalContribution {
+  id                String @id @default(uuid()) @db.Uuid
+  goalId            String @map("goal_id") @db.Uuid
+  publicationId     String @map("publication_id") @db.Uuid
+  metricType        String @map("metric_type")
+  contributionValue Int    @map("contribution_value")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  goal        Goal        @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@unique([goalId, publicationId])
+  @@map("goal_contributions")
+}
+
+// ==================== CHAT ====================
+
+model Conversation {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  members  ConversationMember[]
+  messages Message[]
+
+  @@map("conversations")
+}
+
+model ConversationMember {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @map("conversation_id") @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  lastReadAt     DateTime? @map("last_read_at")
+  joinedAt       DateTime @default(now()) @map("joined_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("conversation_members")
+}
+
+model Message {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @map("conversation_id") @db.Uuid
+  senderId       String   @map("sender_id") @db.Uuid
+  body           String
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+// ==================== NOTIFICATIONS ====================
+
+model Notification {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  type      String
+  title     String
+  body      String
+  data      Json?
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+// ==================== MODERATION ====================
+
+model Report {
+  id         String   @id @default(uuid()) @db.Uuid
+  reporterId String   @map("reporter_id") @db.Uuid
+  targetType String   @map("target_type") // 'publication', 'comment', 'user'
+  targetId   String   @map("target_id") @db.Uuid
+  reasonCode String   @map("reason_code")
+  details    String?
+  resolvedAt DateTime? @map("resolved_at")
+  resolution String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  reporter User @relation("reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  action    String
+  target    String
+  targetId  String?  @map("target_id") @db.Uuid
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
