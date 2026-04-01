@@ -10,15 +10,23 @@ export class HealthController {
   @Get()
   async check() {
     let db = 'disconnected';
+    let tables: string[] = [];
+    let dbError = '';
     try {
-      await this.prisma.$queryRaw`SELECT 1`;
+      const result = await this.prisma.$queryRaw<{ tablename: string }[]>`
+        SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+      `;
       db = 'connected';
-    } catch {
+      tables = result.map((r) => r.tablename);
+    } catch (e) {
       db = 'error';
+      dbError = e instanceof Error ? e.message : String(e);
     }
     return {
       status: db === 'connected' ? 'ok' : 'degraded',
       db,
+      tables,
+      dbError: dbError || undefined,
       timestamp: new Date().toISOString(),
     };
   }
