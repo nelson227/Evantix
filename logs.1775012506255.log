@@ -1,0 +1,97 @@
+2026-04-01T04:03:17.997414345Z [inf]  
+2026-04-01T04:03:20.032357733Z [inf]  [35m[Region: us-east4][0m
+2026-04-01T04:03:20.042920681Z [inf]  [35m=========================
+2026-04-01T04:03:20.042971873Z [inf]  Using Detected Dockerfile
+2026-04-01T04:03:20.042979457Z [inf]  =========================
+2026-04-01T04:03:20.042982984Z [inf]  [0m
+2026-04-01T04:03:20.042997663Z [inf]  context: xc5w-C46H
+2026-04-01T04:03:20.184936957Z [inf]  [internal] load build definition from Dockerfile
+2026-04-01T04:03:20.184986728Z [inf]  [internal] load build definition from Dockerfile
+2026-04-01T04:03:20.185003814Z [inf]  [internal] load build definition from Dockerfile
+2026-04-01T04:03:20.185015078Z [inf]  [internal] load build definition from Dockerfile
+2026-04-01T04:03:20.191445136Z [inf]  [internal] load build definition from Dockerfile
+2026-04-01T04:03:20.194384074Z [inf]  [internal] load metadata for docker.io/library/node:20-slim
+2026-04-01T04:03:20.197759644Z [inf]  [auth] library/node:pull token for registry-1.docker.io
+2026-04-01T04:03:20.197795137Z [inf]  [auth] library/node:pull token for registry-1.docker.io
+2026-04-01T04:03:20.365982185Z [inf]  [internal] load metadata for docker.io/library/node:20-slim
+2026-04-01T04:03:20.366211746Z [inf]  [internal] load .dockerignore
+2026-04-01T04:03:20.366241542Z [inf]  [internal] load .dockerignore
+2026-04-01T04:03:20.366796193Z [inf]  [internal] load .dockerignore
+2026-04-01T04:03:20.373336570Z [inf]  [internal] load .dockerignore
+2026-04-01T04:03:20.379515270Z [inf]  [builder  4/12] COPY package.json ./
+2026-04-01T04:03:20.379550904Z [inf]  [builder  3/12] WORKDIR /app
+2026-04-01T04:03:20.379558662Z [inf]  [runner  7/15] RUN npm install prisma@5.22.0 --legacy-peer-deps
+2026-04-01T04:03:20.379570956Z [inf]  [runner  6/15] RUN npm install --legacy-peer-deps --omit=dev
+2026-04-01T04:03:20.379577169Z [inf]  [builder  9/12] RUN npm install --legacy-peer-deps
+2026-04-01T04:03:20.379583170Z [inf]  [builder  6/12] COPY nest-cli.json ./
+2026-04-01T04:03:20.379603040Z [inf]  [builder  8/12] RUN echo '{"compilerOptions":{"target":"ES2022","module":"commonjs","lib":["ES2022"],"declaration":true,"strict":true,"noImplicitAny":true,"strictNullChecks":true,"noUnusedLocals":false,"noUnusedParameters":false,"noImplicitReturns":true,"noFallthroughCasesInSwitch":true,"moduleResolution":"node","esModuleInterop":true,"resolveJsonModule":true,"skipLibCheck":true,"forceConsistentCasingInFileNames":true,"emitDecoratorMetadata":true,"experimentalDecorators":true}}' > /tsconfig.base.json
+2026-04-01T04:03:20.379611062Z [inf]  [runner  4/15] COPY package.json ./
+2026-04-01T04:03:20.379617705Z [inf]  [internal] load build context
+2026-04-01T04:03:20.379623905Z [inf]  [runner  3/15] WORKDIR /app
+2026-04-01T04:03:20.379631379Z [inf]  [runner  2/15] RUN apt-get update -y && apt-get install -y openssl dumb-init && rm -rf /var/lib/apt/lists/*
+2026-04-01T04:03:20.379644538Z [inf]  [builder  5/12] COPY tsconfig.json ./
+2026-04-01T04:03:20.379655190Z [inf]  [builder  7/12] COPY prisma ./prisma/
+2026-04-01T04:03:20.379664790Z [inf]  [runner  5/15] COPY prisma ./prisma/
+2026-04-01T04:03:20.379673810Z [inf]  [builder  2/12] RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+2026-04-01T04:03:20.379680294Z [inf]  [builder  1/12] FROM docker.io/library/node:20-slim@sha256:1e85773c98c31d4fe5b545e4cb17379e617b348832fb3738b22a08f68dec30f3
+2026-04-01T04:03:20.379688530Z [inf]  [runner  8/15] RUN ls -la node_modules/.bin/prisma 2>/dev/null || echo "prisma not in .bin" &&     node node_modules/prisma/build/index.js --version
+2026-04-01T04:03:20.379740282Z [inf]  [runner 15/15] RUN printf '#!/bin/sh\nset -e\necho "=== Startup ==="\necho "DATABASE_URL set: $(if [ -n "$DATABASE_URL" ]; then echo yes; else echo NO; fi)"\necho "Node version: $(node --version)"\necho "Prisma files:"\nls -la prisma/ 2>/dev/null || echo "No prisma dir"\nls -la prisma/migrations/ 2>/dev/null || echo "No migrations dir"\necho "Running migrations..."\nnode node_modules/prisma/build/index.js migrate deploy 2>&1\necho "Migration completed successfully"\necho "Starting server..."\nexec node dist/main\n' > /app/start.sh && chmod +x /app/start.sh
+2026-04-01T04:03:20.379757810Z [inf]  [runner 14/15] RUN mkdir -p /app/uploads
+2026-04-01T04:03:20.379767397Z [inf]  [runner 13/15] COPY --from=builder /app/dist ./dist/
+2026-04-01T04:03:20.379776746Z [inf]  [runner 12/15] RUN echo '{}' > /tsconfig.base.json
+2026-04-01T04:03:20.379785908Z [inf]  [runner 11/15] COPY --from=builder /app/node_modules/@prisma/engines ./node_modules/@prisma/engines
+2026-04-01T04:03:20.379794490Z [inf]  [runner 10/15] COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+2026-04-01T04:03:20.379803540Z [inf]  [runner  9/15] COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+2026-04-01T04:03:20.379815309Z [inf]  [builder 12/12] RUN npm run build
+2026-04-01T04:03:20.379824050Z [inf]  [builder 11/12] COPY src ./src/
+2026-04-01T04:03:20.379839756Z [inf]  [builder 10/12] RUN ./node_modules/.bin/prisma generate
+2026-04-01T04:03:20.380331305Z [inf]  [internal] load build context
+2026-04-01T04:03:20.380391039Z [inf]  [builder  1/12] FROM docker.io/library/node:20-slim@sha256:1e85773c98c31d4fe5b545e4cb17379e617b348832fb3738b22a08f68dec30f3
+2026-04-01T04:03:20.384422545Z [inf]  [builder  1/12] FROM docker.io/library/node:20-slim@sha256:1e85773c98c31d4fe5b545e4cb17379e617b348832fb3738b22a08f68dec30f3
+2026-04-01T04:03:20.385480910Z [inf]  [internal] load build context
+2026-04-01T04:03:20.476644203Z [inf]  [internal] load build context
+2026-04-01T04:03:20.484472352Z [inf]  [runner  2/15] RUN apt-get update -y && apt-get install -y openssl dumb-init && rm -rf /var/lib/apt/lists/*
+2026-04-01T04:03:20.484523081Z [inf]  [runner  3/15] WORKDIR /app
+2026-04-01T04:03:20.484537825Z [inf]  [runner  4/15] COPY package.json ./
+2026-04-01T04:03:20.484549183Z [inf]  [runner  5/15] COPY prisma ./prisma/
+2026-04-01T04:03:20.484562049Z [inf]  [runner  6/15] RUN npm install --legacy-peer-deps --omit=dev
+2026-04-01T04:03:20.484572874Z [inf]  [runner  7/15] RUN npm install prisma@5.22.0 --legacy-peer-deps
+2026-04-01T04:03:20.484603586Z [inf]  [builder  2/12] RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+2026-04-01T04:03:20.484614877Z [inf]  [builder  3/12] WORKDIR /app
+2026-04-01T04:03:20.484627848Z [inf]  [builder  4/12] COPY package.json ./
+2026-04-01T04:03:20.484639516Z [inf]  [builder  5/12] COPY tsconfig.json ./
+2026-04-01T04:03:20.484650673Z [inf]  [builder  6/12] COPY nest-cli.json ./
+2026-04-01T04:03:20.484661202Z [inf]  [builder  7/12] COPY prisma ./prisma/
+2026-04-01T04:03:20.484676812Z [inf]  [builder  8/12] RUN echo '{"compilerOptions":{"target":"ES2022","module":"commonjs","lib":["ES2022"],"declaration":true,"strict":true,"noImplicitAny":true,"strictNullChecks":true,"noUnusedLocals":false,"noUnusedParameters":false,"noImplicitReturns":true,"noFallthroughCasesInSwitch":true,"moduleResolution":"node","esModuleInterop":true,"resolveJsonModule":true,"skipLibCheck":true,"forceConsistentCasingInFileNames":true,"emitDecoratorMetadata":true,"experimentalDecorators":true}}' > /tsconfig.base.json
+2026-04-01T04:03:20.484691764Z [inf]  [builder  9/12] RUN npm install --legacy-peer-deps
+2026-04-01T04:03:20.484704113Z [inf]  [builder 10/12] RUN ./node_modules/.bin/prisma generate
+2026-04-01T04:03:20.484716085Z [inf]  [builder 11/12] COPY src ./src/
+2026-04-01T04:03:20.484727541Z [inf]  [builder 12/12] RUN npm run build
+2026-04-01T04:03:20.484754080Z [inf]  [runner  8/15] RUN ls -la node_modules/.bin/prisma 2>/dev/null || echo "prisma not in .bin" &&     node node_modules/prisma/build/index.js --version
+2026-04-01T04:03:20.484772329Z [inf]  [builder 12/12] RUN npm run build
+2026-04-01T04:03:20.665873946Z [inf]  prisma not in .bin
+
+2026-04-01T04:03:20.738194617Z [inf]  node:internal/modules/cjs/loader:1210
+  throw err;
+  ^
+
+Error: Cannot find module '/app/node_modules/prisma/build/index.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.20.2
+
+2026-04-01T04:03:20.760486166Z [err]  [runner  8/15] RUN ls -la node_modules/.bin/prisma 2>/dev/null || echo "prisma not in .bin" &&     node node_modules/prisma/build/index.js --version
+2026-04-01T04:03:20.774035129Z [err]  Dockerfile:45
+2026-04-01T04:03:20.774072776Z [err]  -------------------
+2026-04-01T04:03:20.774079046Z [err]  44 |     # Verify prisma CLI is available
+2026-04-01T04:03:20.774084864Z [err]  45 | >>> RUN ls -la node_modules/.bin/prisma 2>/dev/null || echo "prisma not in .bin" && \
+2026-04-01T04:03:20.774091213Z [err]  46 | >>>     node node_modules/prisma/build/index.js --version
+2026-04-01T04:03:20.774096596Z [err]  47 |
+2026-04-01T04:03:20.774101121Z [err]  -------------------
+2026-04-01T04:03:20.774106219Z [err]  ERROR: failed to build: failed to solve: process "/bin/sh -c ls -la node_modules/.bin/prisma 2>/dev/null || echo \"prisma not in .bin\" &&     node node_modules/prisma/build/index.js --version" did not complete successfully: exit code: 1
