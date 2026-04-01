@@ -29,9 +29,11 @@ RUN mkdir -p /app/uploads
 
 ENV NODE_ENV=production
 
+# Create startup script
+RUN printf '#!/bin/sh\nset -e\necho "Running migrations..."\nnpx prisma migrate deploy\necho "Starting server..."\nexec node dist/main\n' > /app/start.sh && chmod +x /app/start.sh
+
 EXPOSE ${PORT:-3001}
 
 ENTRYPOINT ["dumb-init", "--"]
 
-# Run migrations at startup, then start server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+CMD ["/app/start.sh"]
