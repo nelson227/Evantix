@@ -1,0 +1,91 @@
+2026-04-01T03:45:49.622223346Z [inf]  Starting Container
+2026-04-01T03:45:50.263092757Z [inf]  drwxr-xr-x 1 root root  4096 Apr  1 03:45 ..
+2026-04-01T03:45:50.263134906Z [inf]  drwxrwxr-x 2 root root 4096 Apr  1 02:18 20260330105909_init
+2026-04-01T03:45:50.263159215Z [inf]  drwxrwxr-x 3 root root  4096 Apr  1 02:18 migrations
+2026-04-01T03:45:50.263168159Z [inf]  -rw-rw-r-- 1 root root 11661 Apr  1 02:18 schema.prisma
+2026-04-01T03:45:50.263176349Z [inf]  total 16
+2026-04-01T03:45:50.263194917Z [inf]  drwxrwxr-x 3 root root 4096 Apr  1 02:18 .
+2026-04-01T03:45:50.263203552Z [inf]  drwxr-xr-x 3 root root 4096 Apr  1 02:18 ..
+2026-04-01T03:45:50.263285664Z [inf]  -rw-rw-r-- 1 root root  126 Apr  1 02:18 migration_lock.toml
+2026-04-01T03:45:50.263294142Z [inf]  Running migrations...
+2026-04-01T03:45:50.263300822Z [inf]  ERROR: Prisma CLI not found!
+2026-04-01T03:45:50.263331774Z [inf]  === Startup ===
+2026-04-01T03:45:50.263341567Z [inf]  DATABASE_URL set: yes
+2026-04-01T03:45:50.263344494Z [inf]  === Startup ===
+2026-04-01T03:45:50.263351136Z [inf]  Prisma files:
+2026-04-01T03:45:50.263359032Z [inf]  DATABASE_URL set: yes
+2026-04-01T03:45:50.263360631Z [inf]  total 24
+2026-04-01T03:45:50.263369062Z [inf]  Prisma files:
+2026-04-01T03:45:50.263371198Z [inf]  drwxr-xr-x 3 root root  4096 Apr  1 02:18 .
+2026-04-01T03:45:50.263382074Z [inf]  total 24
+2026-04-01T03:45:50.263390297Z [inf]  drwxrwxr-x 3 root root  4096 Apr  1 02:18 migrations
+2026-04-01T03:45:50.263390885Z [inf]  drwxr-xr-x 3 root root  4096 Apr  1 02:18 .
+2026-04-01T03:45:50.263401249Z [inf]  -rw-rw-r-- 1 root root 11661 Apr  1 02:18 schema.prisma
+2026-04-01T03:45:50.263401721Z [inf]  drwxr-xr-x 1 root root  4096 Apr  1 03:45 ..
+2026-04-01T03:45:50.263406276Z [inf]  drwxrwxr-x 3 root root 4096 Apr  1 02:18 .
+2026-04-01T03:45:50.263411535Z [inf]  total 16
+2026-04-01T03:45:50.263418664Z [inf]  drwxr-xr-x 3 root root 4096 Apr  1 02:18 ..
+2026-04-01T03:45:50.263425779Z [inf]  drwxrwxr-x 2 root root 4096 Apr  1 02:18 20260330105909_init
+2026-04-01T03:45:50.263572229Z [inf]  -rw-rw-r-- 1 root root  126 Apr  1 02:18 migration_lock.toml
+2026-04-01T03:45:50.263578030Z [inf]  Running migrations...
+2026-04-01T03:45:50.263585904Z [inf]  ERROR: Prisma CLI not found!
+2026-04-01T03:45:51.443835699Z [inf]  ERROR: Prisma CLI not found!
+2026-04-01T03:45:51.443990893Z [inf]  === Startup ===
+2026-04-01T03:45:51.443999066Z [inf]  DATABASE_URL set: yes
+2026-04-01T03:45:51.444007446Z [inf]  Prisma files:
+2026-04-01T03:45:51.444017428Z [inf]  total 24
+2026-04-01T03:45:51.444024569Z [inf]  drwxr-xr-x 3 root root  4096 Apr  1 02:18 .
+2026-04-01T03:45:51.444032240Z [inf]  drwxr-xr-x 1 root root  4096 Apr  1 03:45 ..
+2026-04-01T03:45:51.444054115Z [inf]  drwxrwxr-x 3 root root  4096 Apr  1 02:18 migrations
+2026-04-01T03:45:51.444063631Z [inf]  -rw-rw-r-- 1 root root 11661 Apr  1 02:18 schema.prisma
+2026-04-01T03:45:51.444071718Z [inf]  total 16
+2026-04-01T03:45:51.444079461Z [inf]  drwxrwxr-x 3 root root 4096 Apr  1 02:18 .
+2026-04-01T03:45:51.444085706Z [inf]  drwxr-xr-x 3 root root 4096 Apr  1 02:18 ..
+2026-04-01T03:45:51.444094382Z [inf]  drwxrwxr-x 2 root root 4096 Apr  1 02:18 20260330105909_init
+2026-04-01T03:45:51.444103571Z [inf]  -rw-rw-r-- 1 root root  126 Apr  1 02:18 migration_lock.toml
+2026-04-01T03:45:51.444112039Z [inf]  Running migrations...
+2026-04-01T03:45:52.278822726Z [inf]  drwxr-xr-x 1 root root  4096 Apr  1 03:45 ..
+2026-04-01T03:45:52.278826177Z [inf]  Prisma files:
+2026-04-01T03:45:52.278832452Z [inf]  drwxrwxr-x 3 root root  4096 Apr  1 02:18 migrations
+2026-04-01T03:45:52.278839608Z [inf]  total 24
+2026-04-01T03:45:52.278850739Z [inf]  drwxr-xr-x 3 root root  4096 Apr  1 02:18 .
+2026-04-01T03:45:52.278855242Z [inf]  -rw-rw-r-- 1 root root 11661 Apr  1 02:18 schema.prisma
+2026-04-01T03:45:52.278872299Z [inf]  total 16
+2026-04-01T03:45:52.278877517Z [inf]  drwxrwxr-x 3 root root 4096 Apr  1 02:18 .
+2026-04-01T03:45:52.278886491Z [inf]  drwxr-xr-x 3 root root 4096 Apr  1 02:18 ..
+2026-04-01T03:45:52.278892153Z [inf]  drwxrwxr-x 2 root root 4096 Apr  1 02:18 20260330105909_init
+2026-04-01T03:45:52.278899276Z [inf]  -rw-rw-r-- 1 root root  126 Apr  1 02:18 migration_lock.toml
+2026-04-01T03:45:52.278904295Z [inf]  Running migrations...
+2026-04-01T03:45:52.278911589Z [inf]  ERROR: Prisma CLI not found!
+2026-04-01T03:45:52.278945382Z [inf]  === Startup ===
+2026-04-01T03:45:52.278954623Z [inf]  DATABASE_URL set: yes
+2026-04-01T03:45:53.354210851Z [inf]  === Startup ===
+2026-04-01T03:45:53.354221547Z [inf]  DATABASE_URL set: yes
+2026-04-01T03:45:53.354371201Z [inf]  Prisma files:
+2026-04-01T03:45:53.358984121Z [inf]  drwxr-xr-x 1 root root  4096 Apr  1 03:45 ..
+2026-04-01T03:45:53.358995796Z [inf]  drwxrwxr-x 3 root root  4096 Apr  1 02:18 migrations
+2026-04-01T03:45:53.359004332Z [inf]  -rw-rw-r-- 1 root root 11661 Apr  1 02:18 schema.prisma
+2026-04-01T03:45:53.359015901Z [inf]  total 16
+2026-04-01T03:45:53.359024601Z [inf]  drwxrwxr-x 3 root root 4096 Apr  1 02:18 .
+2026-04-01T03:45:53.359026474Z [inf]  total 24
+2026-04-01T03:45:53.359034207Z [inf]  drwxr-xr-x 3 root root 4096 Apr  1 02:18 ..
+2026-04-01T03:45:53.359043137Z [inf]  drwxr-xr-x 3 root root  4096 Apr  1 02:18 .
+2026-04-01T03:45:53.359046841Z [inf]  drwxrwxr-x 2 root root 4096 Apr  1 02:18 20260330105909_init
+2026-04-01T03:45:53.359054085Z [inf]  -rw-rw-r-- 1 root root  126 Apr  1 02:18 migration_lock.toml
+2026-04-01T03:45:53.359059267Z [inf]  Running migrations...
+2026-04-01T03:45:53.359078683Z [inf]  ERROR: Prisma CLI not found!
+2026-04-01T03:45:55.406455953Z [inf]  === Startup ===
+2026-04-01T03:45:55.406463846Z [inf]  DATABASE_URL set: yes
+2026-04-01T03:45:55.406472564Z [inf]  Prisma files:
+2026-04-01T03:45:55.406477430Z [inf]  drwxrwxr-x 3 root root 4096 Apr  1 02:18 .
+2026-04-01T03:45:55.406480613Z [inf]  total 24
+2026-04-01T03:45:55.406491523Z [inf]  drwxr-xr-x 3 root root 4096 Apr  1 02:18 ..
+2026-04-01T03:45:55.406499387Z [inf]  drwxrwxr-x 2 root root 4096 Apr  1 02:18 20260330105909_init
+2026-04-01T03:45:55.406517113Z [inf]  drwxr-xr-x 3 root root  4096 Apr  1 02:18 .
+2026-04-01T03:45:55.406534743Z [inf]  drwxr-xr-x 1 root root  4096 Apr  1 03:45 ..
+2026-04-01T03:45:55.406543481Z [inf]  drwxrwxr-x 3 root root  4096 Apr  1 02:18 migrations
+2026-04-01T03:45:55.406550257Z [inf]  -rw-rw-r-- 1 root root 11661 Apr  1 02:18 schema.prisma
+2026-04-01T03:45:55.406559840Z [inf]  total 16
+2026-04-01T03:45:55.406592327Z [inf]  -rw-rw-r-- 1 root root  126 Apr  1 02:18 migration_lock.toml
+2026-04-01T03:45:55.406607003Z [inf]  Running migrations...
+2026-04-01T03:45:55.406614535Z [inf]  ERROR: Prisma CLI not found!
