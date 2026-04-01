@@ -6,7 +6,6 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "types": [],
-    "typeRoots": [],
     "paths": {
       "@/*": ["./src/*"]
     }
