@@ -1,0 +1,151 @@
+2026-04-01T04:12:18.722944122Z [inf]  === Startup ===
+2026-04-01T04:12:18.722964010Z [inf]  DATABASE_URL set: yes
+2026-04-01T04:12:18.722970247Z [inf]  Node version: v20.20.2
+2026-04-01T04:12:18.722976009Z [inf]  Running migrations...
+2026-04-01T04:12:18.809867051Z [inf]  node:internal/modules/cjs/loader:1210
+2026-04-01T04:12:18.809875807Z [inf]    throw err;
+2026-04-01T04:12:18.809882391Z [inf]    ^
+2026-04-01T04:12:18.809888498Z [inf]  
+2026-04-01T04:12:18.809894785Z [inf]  Error: Cannot find module '@prisma/debug'
+2026-04-01T04:12:18.809903178Z [inf]  Require stack:
+2026-04-01T04:12:18.809909242Z [inf]  - /app/node_modules/@prisma/engines/dist/index.js
+2026-04-01T04:12:18.809921602Z [inf]  - /app/node_modules/prisma/build/index.js
+2026-04-01T04:12:18.809928536Z [inf]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-04-01T04:12:18.809934600Z [inf]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-04-01T04:12:18.809939653Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19)
+2026-04-01T04:12:18.809945289Z [inf]      at require (node:internal/modules/helpers:182:18)
+2026-04-01T04:12:18.809957771Z [inf]      at Object.<anonymous> (/app/node_modules/@prisma/engines/dist/index.js:40:28)
+2026-04-01T04:12:18.809964063Z [inf]      at Module._compile (node:internal/modules/cjs/loader:1521:14)
+2026-04-01T04:12:18.809972538Z [inf]      at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+2026-04-01T04:12:18.809979749Z [inf]      at Module.load (node:internal/modules/cjs/loader:1266:32)
+2026-04-01T04:12:18.809984891Z [inf]      at Module._load (node:internal/modules/cjs/loader:1091:12)
+2026-04-01T04:12:18.809989354Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19) {
+2026-04-01T04:12:18.809994941Z [inf]    code: 'MODULE_NOT_FOUND',
+2026-04-01T04:12:18.810002717Z [inf]    requireStack: [
+2026-04-01T04:12:18.810008867Z [inf]      '/app/node_modules/@prisma/engines/dist/index.js',
+2026-04-01T04:12:18.810014672Z [inf]      '/app/node_modules/prisma/build/index.js'
+2026-04-01T04:12:18.810021198Z [inf]    ]
+2026-04-01T04:12:18.810025529Z [inf]  }
+2026-04-01T04:12:18.810804379Z [inf]  
+2026-04-01T04:12:18.810813764Z [inf]  Node.js v20.20.2
+2026-04-01T04:12:18.876937133Z [inf]  Starting Container
+2026-04-01T04:12:19.421081788Z [inf]  === Startup ===
+2026-04-01T04:12:19.421087168Z [inf]  DATABASE_URL set: yes
+2026-04-01T04:12:19.421091917Z [inf]  Node version: v20.20.2
+2026-04-01T04:12:19.421097046Z [inf]  Running migrations...
+2026-04-01T04:12:19.465807161Z [inf]  node:internal/modules/cjs/loader:1210
+2026-04-01T04:12:19.465814981Z [inf]    throw err;
+2026-04-01T04:12:19.465819086Z [inf]    ^
+2026-04-01T04:12:19.465825384Z [inf]  
+2026-04-01T04:12:19.465828853Z [inf]  Error: Cannot find module '@prisma/debug'
+2026-04-01T04:12:19.465833528Z [inf]  Require stack:
+2026-04-01T04:12:19.465838068Z [inf]  }
+2026-04-01T04:12:19.465842068Z [inf]  - /app/node_modules/@prisma/engines/dist/index.js
+2026-04-01T04:12:19.465846754Z [inf]  - /app/node_modules/prisma/build/index.js
+2026-04-01T04:12:19.465851646Z [inf]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-04-01T04:12:19.465855752Z [inf]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-04-01T04:12:19.465859904Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19)
+2026-04-01T04:12:19.465863551Z [inf]      at require (node:internal/modules/helpers:182:18)
+2026-04-01T04:12:19.465867261Z [inf]      at Object.<anonymous> (/app/node_modules/@prisma/engines/dist/index.js:40:28)
+2026-04-01T04:12:19.465871448Z [inf]      at Module._compile (node:internal/modules/cjs/loader:1521:14)
+2026-04-01T04:12:19.465875336Z [inf]      at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+2026-04-01T04:12:19.465880266Z [inf]      at Module.load (node:internal/modules/cjs/loader:1266:32)
+2026-04-01T04:12:19.465887122Z [inf]      at Module._load (node:internal/modules/cjs/loader:1091:12)
+2026-04-01T04:12:19.465891837Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19) {
+2026-04-01T04:12:19.465896832Z [inf]    code: 'MODULE_NOT_FOUND',
+2026-04-01T04:12:19.465901236Z [inf]    requireStack: [
+2026-04-01T04:12:19.465907352Z [inf]      '/app/node_modules/@prisma/engines/dist/index.js',
+2026-04-01T04:12:19.465912040Z [inf]      '/app/node_modules/prisma/build/index.js'
+2026-04-01T04:12:19.465916174Z [inf]    ]
+2026-04-01T04:12:19.466816101Z [inf]  
+2026-04-01T04:12:19.466823478Z [inf]  Node.js v20.20.2
+2026-04-01T04:12:19.993594092Z [inf]  === Startup ===
+2026-04-01T04:12:19.993601039Z [inf]  DATABASE_URL set: yes
+2026-04-01T04:12:19.995039534Z [inf]  Node version: v20.20.2
+2026-04-01T04:12:19.995046214Z [inf]  Running migrations...
+2026-04-01T04:12:20.352038200Z [inf]  node:internal/modules/cjs/loader:1210
+2026-04-01T04:12:20.352046117Z [inf]    throw err;
+2026-04-01T04:12:20.352052773Z [inf]    ^
+2026-04-01T04:12:20.352060359Z [inf]  
+2026-04-01T04:12:20.352068943Z [inf]  Error: Cannot find module '@prisma/debug'
+2026-04-01T04:12:20.352075371Z [inf]  Require stack:
+2026-04-01T04:12:20.352081698Z [inf]  - /app/node_modules/@prisma/engines/dist/index.js
+2026-04-01T04:12:20.352089439Z [inf]  - /app/node_modules/prisma/build/index.js
+2026-04-01T04:12:20.352096203Z [inf]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-04-01T04:12:20.352103291Z [inf]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-04-01T04:12:20.352109337Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19)
+2026-04-01T04:12:20.352115691Z [inf]      at require (node:internal/modules/helpers:182:18)
+2026-04-01T04:12:20.352121810Z [inf]      at Object.<anonymous> (/app/node_modules/@prisma/engines/dist/index.js:40:28)
+2026-04-01T04:12:20.352126501Z [inf]      at Module._compile (node:internal/modules/cjs/loader:1521:14)
+2026-04-01T04:12:20.352130490Z [inf]      at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+2026-04-01T04:12:20.352140101Z [inf]      at Module.load (node:internal/modules/cjs/loader:1266:32)
+2026-04-01T04:12:20.352144598Z [inf]      at Module._load (node:internal/modules/cjs/loader:1091:12)
+2026-04-01T04:12:20.352148310Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19) {
+2026-04-01T04:12:20.352156585Z [inf]    code: 'MODULE_NOT_FOUND',
+2026-04-01T04:12:20.352160123Z [inf]    requireStack: [
+2026-04-01T04:12:20.352164167Z [inf]      '/app/node_modules/@prisma/engines/dist/index.js',
+2026-04-01T04:12:20.352168305Z [inf]      '/app/node_modules/prisma/build/index.js'
+2026-04-01T04:12:20.352171821Z [inf]    ]
+2026-04-01T04:12:20.352176440Z [inf]  }
+2026-04-01T04:12:20.352318845Z [inf]  
+2026-04-01T04:12:20.352322785Z [inf]  Node.js v20.20.2
+2026-04-01T04:12:20.666149943Z [inf]  === Startup ===
+2026-04-01T04:12:20.666155357Z [inf]  DATABASE_URL set: yes
+2026-04-01T04:12:20.666159801Z [inf]  Node version: v20.20.2
+2026-04-01T04:12:20.666163640Z [inf]  Running migrations...
+2026-04-01T04:12:20.770328959Z [inf]  node:internal/modules/cjs/loader:1210
+2026-04-01T04:12:20.770333049Z [inf]    throw err;
+2026-04-01T04:12:20.770337263Z [inf]    ^
+2026-04-01T04:12:20.770342106Z [inf]  
+2026-04-01T04:12:20.770345845Z [inf]  Error: Cannot find module '@prisma/debug'
+2026-04-01T04:12:20.770349718Z [inf]  Require stack:
+2026-04-01T04:12:20.770353962Z [inf]  - /app/node_modules/@prisma/engines/dist/index.js
+2026-04-01T04:12:20.770357985Z [inf]  - /app/node_modules/prisma/build/index.js
+2026-04-01T04:12:20.770361653Z [inf]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-04-01T04:12:20.770365428Z [inf]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-04-01T04:12:20.770370831Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19)
+2026-04-01T04:12:20.770374751Z [inf]      at require (node:internal/modules/helpers:182:18)
+2026-04-01T04:12:20.770378645Z [inf]      at Object.<anonymous> (/app/node_modules/@prisma/engines/dist/index.js:40:28)
+2026-04-01T04:12:20.770382706Z [inf]      at Module._compile (node:internal/modules/cjs/loader:1521:14)
+2026-04-01T04:12:20.770387120Z [inf]      at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+2026-04-01T04:12:20.770390555Z [inf]      at Module.load (node:internal/modules/cjs/loader:1266:32)
+2026-04-01T04:12:20.770394398Z [inf]      at Module._load (node:internal/modules/cjs/loader:1091:12)
+2026-04-01T04:12:20.770398170Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19) {
+2026-04-01T04:12:20.770402288Z [inf]    code: 'MODULE_NOT_FOUND',
+2026-04-01T04:12:20.770406129Z [inf]    requireStack: [
+2026-04-01T04:12:20.770410046Z [inf]      '/app/node_modules/@prisma/engines/dist/index.js',
+2026-04-01T04:12:20.770414179Z [inf]      '/app/node_modules/prisma/build/index.js'
+2026-04-01T04:12:20.770417885Z [inf]    ]
+2026-04-01T04:12:20.770421725Z [inf]  }
+2026-04-01T04:12:20.772113632Z [inf]  
+2026-04-01T04:12:20.772117126Z [inf]  Node.js v20.20.2
+2026-04-01T04:12:21.361034377Z [inf]  === Startup ===
+2026-04-01T04:12:21.361041543Z [inf]  DATABASE_URL set: yes
+2026-04-01T04:12:21.361048610Z [inf]  Node version: v20.20.2
+2026-04-01T04:12:21.361054616Z [inf]  Running migrations...
+2026-04-01T04:12:21.406448577Z [inf]      at Module._load (node:internal/modules/cjs/loader:1091:12)
+2026-04-01T04:12:21.406457883Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19) {
+2026-04-01T04:12:21.406462367Z [inf]    code: 'MODULE_NOT_FOUND',
+2026-04-01T04:12:21.406466308Z [inf]    requireStack: [
+2026-04-01T04:12:21.406469802Z [inf]      '/app/node_modules/@prisma/engines/dist/index.js',
+2026-04-01T04:12:21.406474365Z [inf]      '/app/node_modules/prisma/build/index.js'
+2026-04-01T04:12:21.406525316Z [inf]    ]
+2026-04-01T04:12:21.406530894Z [inf]  }
+2026-04-01T04:12:21.406552912Z [inf]  node:internal/modules/cjs/loader:1210
+2026-04-01T04:12:21.406562067Z [inf]    throw err;
+2026-04-01T04:12:21.406567615Z [inf]    ^
+2026-04-01T04:12:21.406573660Z [inf]  
+2026-04-01T04:12:21.406578696Z [inf]  Error: Cannot find module '@prisma/debug'
+2026-04-01T04:12:21.406583990Z [inf]  Require stack:
+2026-04-01T04:12:21.406606758Z [inf]  - /app/node_modules/@prisma/engines/dist/index.js
+2026-04-01T04:12:21.406612712Z [inf]  - /app/node_modules/prisma/build/index.js
+2026-04-01T04:12:21.406617597Z [inf]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-04-01T04:12:21.406622351Z [inf]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-04-01T04:12:21.406626981Z [inf]      at Module.require (node:internal/modules/cjs/loader:1289:19)
+2026-04-01T04:12:21.406632087Z [inf]      at require (node:internal/modules/helpers:182:18)
+2026-04-01T04:12:21.406636714Z [inf]      at Object.<anonymous> (/app/node_modules/@prisma/engines/dist/index.js:40:28)
+2026-04-01T04:12:21.406641802Z [inf]      at Module._compile (node:internal/modules/cjs/loader:1521:14)
+2026-04-01T04:12:21.406646325Z [inf]      at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+2026-04-01T04:12:21.406652972Z [inf]      at Module.load (node:internal/modules/cjs/loader:1266:32)
+2026-04-01T04:12:21.407890396Z [inf]  
+2026-04-01T04:12:21.407896592Z [inf]  Node.js v20.20.2
